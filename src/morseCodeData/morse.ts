@@ -1,5 +1,5 @@
 
-const morseCodeData: object = {
+const morseCodeData: Record<string, string> = {
     A: "·−", B: "−···", C: "−·−·", D: "−··", E: "·", F: "··−·",
     G: "−−·", H: "····", I: "··", J: "·−−−", K: "−·−", L: "·−··",
     M: "−−", N: "−·", O: "−−−", P: "·−−·", Q: "−−·−", R: "·−·",
