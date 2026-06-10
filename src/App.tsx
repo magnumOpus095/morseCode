@@ -200,6 +200,13 @@ function App() {
     });
   };
 
+  const clearAll = () => {
+    setInput("");
+    stopRef.current = true;
+    setIsPlaying(false);
+    setPlayIndex(-1);
+  };
+
 
   const renderMorseVisual = () => {
     const morse = mode === "encode" ? morseOutput : input;
@@ -243,6 +250,124 @@ function App() {
       <div className="bg-grid" />
       <div className="bg-glow" />
 
+      <div className="container">
+        <header className="header">
+          <div className="header-tag">· − · − Signal Tool</div>
+          <h1>Morse<br /><span>Code</span></h1>
+          <p className="header-sub">··· · −·· / − · −·− / ···</p>
+        </header>
+
+        {/* mode switching */}
+        <div className="mode-switch">
+          <button className={`mode-btn ${mode === "encode" ? "active" : ""}`} onClick={() => { setMode("encode"); clearAll(); }}>
+            Text → Morse
+          </button>
+          <button className={`mode-btn ${mode === "decode" ? "active" : ""}`} onClick={() => { setMode("decode"); clearAll(); }}>
+            Morse → Text
+          </button>
+        </div>
+
+        {/* input card */}
+        <div className="card">
+          <div className="card-header">
+            <span className="card-label">
+              {
+                mode === "encode" ? "input text" : "input morse"
+              }
+            </span>
+
+            <span className='char-count'>
+              {
+                input.length
+              }
+            </span>
+          </div>
+
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} className="textarea" placeholder={
+            mode === "encode"
+              ? "Type anything to encode..."
+              : "Paste morse code here (use · − and / for spaces)..."
+          } spellCheck={false} />
+        </div>
+
+        {/* output card */}
+        {
+          (mode === "encode" ? morseOutput : textOutput) && (
+            <div className="card">
+              <div className="card-header">
+                <span className="card-label">
+                  {mode === "encode" ? "morse output" : "decoded text"}
+                </span>
+                {isPlaying && (
+                  <span className="playing-indicator">
+                    <span className="playing-dot" />Transmitting
+                  </span>
+                )}
+              </div>
+              <div className="output-area">
+                {mode === "encode" ? morseOutput : textOutput}
+              </div>
+              {mode === "encode" && morseOutput && (
+                <div className="visual-area">
+                  <div className="visual-label">Visual Pattern</div>
+                  {renderMorseVisual()}
+                </div>
+              )}
+            </div>
+          )
+        }
+
+        {/* controls */}
+        {
+          input.trim() && (
+            <div className="controls" style={{ marginBottom: "32px" }}>
+              {(mode === "encode" ? morseOutput : textOutput) && (
+                <button className="btn btn-accent" onClick={copyToClipboard}>
+                  {copied ? "✓ Copied" : "Copy Output"}
+                </button>
+              )}
+              {mode === "encode" && morseOutput && (
+                <button
+                  className={`btn ${isPlaying ? "btn-stop" : ""}`}
+                  onClick={playMorse}
+                >
+                  {isPlaying ? "⬛ Stop" : "▶ Play Audio"}
+                </button>
+              )}
+              <button className="btn" onClick={clearAll}>✕ Clear</button>
+              {mode === "encode" && morseOutput && (
+                <div className="speed-control">
+                  <span className="speed-label">Speed <span className="speed-val">{Math.round(1200 / speed)} WPM</span></span>
+                  <input
+                    type="range"
+                    min={60}
+                    max={300}
+                    value={speed}
+                    onChange={(e) => setSpeed(Number(e.target.value))}
+                  />
+                </div>
+              )}
+            </div>
+          )
+        }
+        <div className="section-title">· − Reference Chart</div>
+        <div className="reference-grid">
+          {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("").map((char) => (
+            <div
+              key={char}
+              className="ref-cell"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                if (mode === "encode") setInput((p) => p + char);
+                else setInput((p) => (p ? p + "   " : "") + morseCodeData[char]);
+              }}
+            >
+              <span className="ref-char">{char}</span>
+              <span className="ref-morse">{morseCodeData[char]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
