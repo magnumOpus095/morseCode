@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import './App.css';
 import morseCodeData from './morseCodeData/morse';
 
@@ -102,7 +102,7 @@ function App() {
 
   const morseOutput = mode === "encode" ? toMorse(input) : "";
   const textOutput = mode === "decode" ? fromMorse(input) : "";
-  const displayMorse = mode === "encode" ? morseOutput : input;
+  // const displayMorse = mode === "encode" ? morseOutput : input;
 
 
   const getAudioCtx = () => {
@@ -165,9 +165,9 @@ function App() {
     const ctx = getAudioCtx();
     const unit = speed / 1000;
     let t = ctx.currentTime + 0.1;
-    let symIdx = 0;
+    // let symIdx = 0;
 
-    const allTokens = morse.split("").map((c, i) => ({ char: c, idx: i }));
+    // const allTokens = morse.split("").map((c, i) => ({ char: c, idx: i }));
 
     for (let i = 0; i < morse.length; i++) {
       if (stopRef.current) break;
